@@ -1,0 +1,121 @@
+---
+import type { BlogPost } from '../../types/blog';
+import { format } from 'date-fns';
+import ArticleVisual from './ArticleVisual.astro';
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+
+const visualType = post.tags.includes('black holes') ? 'black-hole' 
+  : post.tags.includes('galaxies') ? 'galaxy'
+  : post.tags.includes('planets') ? 'planet'
+  : post.tags.includes('stars') ? 'star'
+  : 'nebula';
+---
+
+<article class="group relative bg-gray-900 rounded-xl overflow-hidden h-full transform-gpu transition-all duration-500 hover:scale-[1.02]">
+  <!-- Cosmic Glow Effect -->
+  <div class="absolute -inset-1 bg-gradient-to-r from-cosmic-600/50 via-purple-600/50 to-cosmic-400/50 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500 group-hover:duration-200"></div>
+
+  <!-- Card Content -->
+  <div class="relative h-full">
+    <a href={`/blog/${post.slug}`} class="absolute inset-0 z-20">
+      <span class="sr-only">Read article: {post.title}</span>
+    </a>
+
+    <!-- Image and Visual Container -->
+    <div class="aspect-w-16 aspect-h-9 relative">
+      <img 
+        src={post.imageUrl} 
+        alt={post.title}
+        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      
+      <!-- Visual Overlay -->
+      <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-90 transition-all duration-500">
+        <div class="w-32 h-32 transform group-hover:rotate-180 transition-transform duration-[1.5s] ease-out">
+          <ArticleVisual type={visualType} />
+        </div>
+      </div>
+
+      <!-- Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent">
+        <!-- Animated Stars -->
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            class="absolute w-0.5 h-0.5 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `twinkle ${Math.random() * 2 + 1}s infinite ${Math.random() * 2}s`
+            }}
+          />
+        ))}
+      </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="relative p-6">
+      <!-- Category and Date -->
+      <div class="flex items-center gap-4 mb-4">
+        <span class="px-3 py-1 text-sm font-medium text-white bg-cosmic-600/90 rounded-full transform group-hover:scale-110 transition-transform">
+          {post.category}
+        </span>
+        <time class="text-sm text-cosmic-300">
+          {format(post.publishDate, 'MMM d, yyyy')}
+        </time>
+      </div>
+      
+      <!-- Title -->
+      <h3 class="text-xl font-bold mb-3 text-white group-hover:text-cosmic-200 transition-colors relative">
+        <span class="relative z-10">{post.title}</span>
+        <div class="absolute inset-0 bg-gradient-to-r from-cosmic-600/0 to-cosmic-400/0 group-hover:from-cosmic-600/10 group-hover:to-cosmic-400/10 transition-all duration-300 -z-10"></div>
+      </h3>
+      
+      <!-- Excerpt -->
+      <p class="text-gray-300 mb-4 line-clamp-2 transform group-hover:translate-x-1 transition-transform duration-300">
+        {post.excerpt}
+      </p>
+
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2">
+        {post.tags.slice(0, 3).map(tag => (
+          <span class="text-sm text-cosmic-400 transform hover:scale-110 transition-transform duration-300">#{tag}</span>
+        ))}
+      </div>
+
+      <!-- Read More Link -->
+      <div class="mt-6 flex items-center text-cosmic-300 text-sm font-medium group/link">
+        <span class="mr-2 group-hover:text-cosmic-200 transition-colors">Read article</span>
+        <svg 
+          class="w-4 h-4 transform group-hover:translate-x-2 transition-all duration-300" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  @keyframes twinkle {
+    0%, 100% { 
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    50% { 
+      opacity: 1;
+      transform: scale(1.5);
+    }
+  }
+
+  .group:hover {
+    box-shadow: 0 0 30px theme('colors.cosmic.600' / 20%);
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Container from '../../../components/common/Container.astro';
+import PostGrid from '../../../components/blog/PostGrid.astro';
+import { posts } from '../../../data/posts';
+
+export async function getStaticPaths() {
+  const tags = [...new Set(posts.flatMap(post => post.tags))];
+  
+  return tags.map(tag => ({
+    params: { tag: tag.toLowerCase() },
+    props: { 
+      tag,
+      posts: posts.filter(post => post.tags.includes(tag))
+    },
+  }));
+}
+
+const { tag, posts: tagPosts } = Astro.props;
+---
+
+<Layout title={`#${tag} - Blog Posts`}>
+  <Container>
+    <div class="py-16">
+      <header class="mb-12">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="px-4 py-2 text-lg font-medium text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+            #{tag}
+          </span>
+        </div>
+        <p class="text-xl text-gray-600 dark:text-gray-400">
+          Explore articles tagged with #{tag}.
+        </p>
+      </header>
+
+      <PostGrid posts={tagPosts} columns={2} />
+    </div>
+  </Container>
+</Layout>

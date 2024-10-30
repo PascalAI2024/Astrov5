@@ -1,0 +1,322 @@
+---
+---
+
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+  <!-- Interactive Universe Background -->
+  <canvas id="cosmicCanvas" class="absolute inset-0 w-full h-full"></canvas>
+
+  <!-- Enhanced Nebula Overlay -->
+  <div 
+    class="absolute inset-0 opacity-30 animate-nebula"
+    style={{
+      background: `
+        radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.15), transparent 70%),
+        radial-gradient(circle at 80% 70%, rgba(79, 70, 229, 0.15), transparent 70%),
+        radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1), transparent 70%)
+      `
+    }}
+  ></div>
+
+  <!-- Cosmic Dust -->
+  <div class="absolute inset-0">
+    {Array.from({ length: 50 }).map((_, i) => (
+      <div
+        class="absolute rounded-full bg-white/30 animate-pulse-glow"
+        style={{
+          width: `${Math.random() * 2 + 1}px`,
+          height: `${Math.random() * 2 + 1}px`,
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          animationDelay: `${Math.random() * 5}s`,
+          animationDuration: `${Math.random() * 3 + 2}s`
+        }}
+      />
+    ))}
+  </div>
+
+  <!-- Shooting Stars -->
+  <div class="absolute inset-0">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <div
+        class="shooting-star"
+        style={{
+          '--delay': `${i * 4}s`,
+          '--duration': `${Math.random() * 2 + 2}s`,
+          '--top': `${Math.random() * 70}%`,
+          '--left': `${Math.random() * 100}%`
+        }}
+      />
+    ))}
+  </div>
+</div>
+
+<style>
+  .shooting-star {
+    position: absolute;
+    top: var(--top);
+    left: var(--left);
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: shoot var(--duration) linear infinite;
+    animation-delay: var(--delay);
+  }
+
+  .shooting-star::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 100%;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(to left, white, transparent);
+  }
+
+  @keyframes shoot {
+    0% {
+      transform: translate(0, 0) rotate(45deg);
+      opacity: 1;
+    }
+    20% {
+      transform: translate(-400px, 400px) rotate(45deg);
+      opacity: 0;
+    }
+    100% {
+      transform: translate(-400px, 400px) rotate(45deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes nebula-pulse {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(1.1);
+    }
+  }
+</style>
+
+<script>
+class CosmicBackground {
+  constructor() {
+    this.canvas = document.getElementById('cosmicCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.lastX = 0;
+    this.lastY = 0;
+    this.velocityX = 0;
+    this.velocityY = 0;
+    this.isInitialized = false;
+    this.warpSpeed = 0;
+    this.warpSpeedTarget = 0;
+    this.gravitationalPull = 0.2;
+    this.blackHoleActive = false;
+    this.blackHoleX = 0;
+    this.blackHoleY = 0;
+    this.hue = 240;
+    this.hueShift = 0.1;
+    
+    this.resizeCanvas();
+    this.setupEventListeners();
+    this.createParticles();
+    this.animate();
+  }
+
+  resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = this.canvas.getBoundingClientRect();
+    
+    this.canvas.width = rect.width * dpr;
+    this.canvas.height = rect.height * dpr;
+    this.ctx.scale(dpr, dpr);
+    
+    if (this.isInitialized) {
+      this.createParticles();
+    }
+  }
+
+  setupEventListeners() {
+    window.addEventListener('resize', () => this.resizeCanvas());
+    
+    const handleMove = (x, y) => {
+      this.velocityX = (x - this.lastX) * 0.1;
+      this.velocityY = (y - this.lastY) * 0.1;
+      
+      this.lastX = x;
+      this.lastY = y;
+      this.mouseX = x;
+      this.mouseY = y;
+
+      const speed = Math.sqrt(this.velocityX * this.velocityX + this.velocityY * this.velocityY);
+      this.warpSpeedTarget = Math.min(speed * 0.02, 1);
+    };
+
+    document.addEventListener('mousemove', (e) => {
+      handleMove(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      handleMove(touch.clientX, touch.clientY);
+    }, { passive: false });
+
+    document.addEventListener('dblclick', (e) => {
+      this.createBlackHole(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('mouseleave', () => {
+      this.warpSpeedTarget = 0;
+      this.blackHoleActive = false;
+    });
+  }
+
+  createParticles() {
+    const particleCount = Math.min(this.canvas.width * 0.05, 200);
+    this.particles = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        z: Math.random() * 2 + 0.5,
+        size: Math.random() * 2 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        hue: Math.random() * 60 + 200,
+        opacity: Math.random() * 0.5 + 0.3,
+        type: Math.random() > 0.98 ? 'planet' : 'star',
+        angle: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  createBlackHole(x, y) {
+    this.blackHoleActive = true;
+    this.blackHoleX = x;
+    this.blackHoleY = y;
+    
+    setTimeout(() => {
+      this.blackHoleActive = false;
+    }, 3000);
+  }
+
+  drawParticle(particle) {
+    const distanceX = this.mouseX - particle.x;
+    const distanceY = this.mouseY - particle.y;
+    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    const influence = Math.max(0, 1 - distance / 200);
+    
+    if (this.blackHoleActive) {
+      const dx = this.blackHoleX - particle.x;
+      const dy = this.blackHoleY - particle.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance < 200) {
+        const force = (1 - distance / 200) * this.gravitationalPull;
+        particle.x += dx * force;
+        particle.y += dy * force;
+        particle.opacity *= 0.99;
+      }
+    }
+    
+    const warpEffect = this.warpSpeed * particle.z;
+    particle.x += (particle.speedX + this.velocityX * influence * 0.2) * (1 + warpEffect * 2);
+    particle.y += (particle.speedY + this.velocityY * influence * 0.2) * (1 + warpEffect * 2);
+
+    particle.angle += 0.01 * (1 + warpEffect);
+
+    if (particle.x < 0) particle.x = this.canvas.width;
+    if (particle.x > this.canvas.width) particle.x = 0;
+    if (particle.y < 0) particle.y = this.canvas.height;
+    if (particle.y > this.canvas.height) particle.y = 0;
+
+    const glow = Math.min(1, influence * 2 + this.warpSpeed);
+    const twinkle = Math.sin(Date.now() * 0.003 + particle.x + particle.y) * 0.2 + 0.8;
+    const warpStretch = 1 + warpEffect * 2;
+
+    if (particle.type === 'planet') {
+      const gradient = this.ctx.createRadialGradient(
+        particle.x, particle.y, 0,
+        particle.x, particle.y, particle.size * 4 * warpStretch
+      );
+      gradient.addColorStop(0, `hsla(${particle.hue}, 80%, 60%, ${particle.opacity * (1 + warpEffect)})`);
+      gradient.addColorStop(0.5, `hsla(${particle.hue}, 80%, 40%, ${particle.opacity * 0.5 * (1 + warpEffect)})`);
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.save();
+      this.ctx.translate(particle.x, particle.y);
+      this.ctx.rotate(particle.angle);
+      this.ctx.beginPath();
+      this.ctx.ellipse(
+        0, 0,
+        particle.size * 4 * warpStretch,
+        particle.size * 4,
+        0, 0, Math.PI * 2
+      );
+      this.ctx.fillStyle = gradient;
+      this.ctx.fill();
+      this.ctx.restore();
+    } else {
+      this.ctx.beginPath();
+      this.ctx.ellipse(
+        particle.x, particle.y,
+        particle.size * (1 + glow) * warpStretch,
+        particle.size * (1 + glow),
+        Math.atan2(this.velocityY, this.velocityX),
+        0, Math.PI * 2
+      );
+      this.ctx.fillStyle = `hsla(${particle.hue}, 80%, ${60 + glow * 20}%, ${particle.opacity * twinkle * (1 + warpEffect)})`;
+      this.ctx.fill();
+    }
+  }
+
+  animate() {
+    this.warpSpeed += (this.warpSpeedTarget - this.warpSpeed) * 0.1;
+    this.ctx.fillStyle = `rgba(0, 0, 0, ${0.1 + this.warpSpeed * 0.2})`;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    if (this.blackHoleActive) {
+      const gradient = this.ctx.createRadialGradient(
+        this.blackHoleX, this.blackHoleY, 0,
+        this.blackHoleX, this.blackHoleY, 200
+      );
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.8)');
+      gradient.addColorStop(1, 'transparent');
+      this.ctx.fillStyle = gradient;
+      this.ctx.beginPath();
+      this.ctx.arc(this.blackHoleX, this.blackHoleY, 200, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+
+    this.particles.forEach(particle => this.drawParticle(particle));
+    
+    this.velocityX *= 0.95;
+    this.velocityY *= 0.95;
+
+    requestAnimationFrame(() => this.animate());
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  new CosmicBackground();
+});
+</script>

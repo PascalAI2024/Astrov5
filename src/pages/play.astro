@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/common/Container.astro';
+import CosmicQuizGame from '../components/game/CosmicQuizGame.astro';
+import Leaderboard from '../components/game/Leaderboard.astro';
+
+---
+
+<Layout title="Cosmic Quiz Arena">
+  <Container>
+    <div class="py-16">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Cosmic Quiz Arena
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
+          Test your astronomy knowledge and climb the cosmic ranks!
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-[1fr_300px] gap-8">
+        <!-- Quiz Game -->
+        <div class="relative">
+          <div class="absolute -inset-4 bg-gradient-to-r from-cosmic-600/20 to-purple-600/20 rounded-xl blur-xl opacity-75"></div>
+          <div class="relative">
+            <CosmicQuizGame />
+          </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="relative">
+          <div class="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-cosmic-600/20 rounded-xl blur-xl opacity-75"></div>
+          <div class="relative">
+            <Leaderboard />
+          </div>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  /* Prevent text selection during gameplay */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+</style>
+
+<script>
+// Add keyboard shortcuts for quiz navigation
+document.addEventListener('keydown', (e) => {
+  const answerButtons = document.querySelectorAll('.answer-button');
+  if (answerButtons.length) {
+    // Number keys 1-4 for answer selection
+    if (e.key >= '1' && e.key <= '4') {
+      const index = parseInt(e.key) - 1;
+      if (answerButtons[index]) {
+        (answerButtons[index] as HTMLElement).click();
+      }
+    }
+    // Space bar for next question/continue
+    if (e.key === ' ') {
+      const continueButton = document.querySelector('#play-again, .continue-button');
+      if (continueButton) {
+        (continueButton as HTMLElement).click();
+      }
+    }
+  }
+});
+</script>

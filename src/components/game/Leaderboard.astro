@@ -1,0 +1,107 @@
+---
+interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  score: number;
+  date: Date;
+  avatar: string;
+}
+
+// Generate placeholder data
+const leaderboardData: LeaderboardEntry[] = [
+  {
+    rank: 1,
+    name: "Cosmic Carl",
+    score: 2500,
+    date: new Date('2024-03-15'),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cosmic1"
+  },
+  {
+    rank: 2,
+    name: "StarGazer42",
+    score: 2350,
+    date: new Date('2024-03-14'),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cosmic2"
+  },
+  {
+    rank: 3,
+    name: "NebulaQueen",
+    score: 2200,
+    date: new Date('2024-03-13'),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cosmic3"
+  },
+  {
+    rank: 4,
+    name: "GalacticPro",
+    score: 2100,
+    date: new Date('2024-03-12'),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cosmic4"
+  },
+  {
+    rank: 5,
+    name: "AstroNinja",
+    score: 2000,
+    date: new Date('2024-03-11'),
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cosmic5"
+  }
+].map((entry, index) => ({ ...entry, rank: index + 1 }));
+
+---
+
+<div class="bg-gray-900 rounded-2xl p-6 shadow-xl">
+  <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+    <span>🏆</span> Top Cosmic Explorers
+  </h2>
+
+  <div class="space-y-4">
+    {leaderboardData.map((entry) => (
+      <div class="relative group">
+        {/* Highlight Effect */}
+        <div class="absolute inset-0 bg-gradient-to-r from-cosmic-600/10 to-purple-600/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+
+        {/* Entry Content */}
+        <div class="relative flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg">
+          {/* Rank */}
+          <div class="flex-none w-8 h-8 flex items-center justify-center rounded-full bg-gray-700 text-white font-bold">
+            {entry.rank}
+          </div>
+
+          {/* Avatar */}
+          <div class="flex-none w-10 h-10 rounded-full overflow-hidden bg-gray-700">
+            <img 
+              src={entry.avatar} 
+              alt={entry.name}
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Info */}
+          <div class="flex-grow min-w-0">
+            <div class="text-white font-medium truncate">
+              {entry.name}
+            </div>
+            <div class="text-sm text-gray-400">
+              {entry.date.toLocaleDateString()}
+            </div>
+          </div>
+
+          {/* Score */}
+          <div class="flex-none text-right">
+            <div class="text-cosmic-400 font-bold">
+              {entry.score}
+            </div>
+            <div class="text-xs text-gray-500">
+              points
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-6 text-center">
+    <p class="text-sm text-gray-400">
+      Can you make it to the top? Play now to compete!
+    </p>
+  </div>
+</div>

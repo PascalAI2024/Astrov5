@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Container from '../../components/common/Container.astro';
+import PostGrid from '../../components/blog/PostGrid.astro';
+import { posts } from '../../data/posts';
+
+// Get all posts sorted by date
+const allPosts = [...posts].sort((a, b) => 
+  b.publishDate.getTime() - a.publishDate.getTime()
+);
+
+// Get unique categories and tags
+const categories = [...new Set(posts.map(post => post.category))];
+const tags = [...new Set(posts.flatMap(post => post.tags))];
+---
+
+<Layout title="Blog">
+  <Container>
+    <div class="py-16">
+      <header class="mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Astronomy Blog
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">
+          Explore the cosmos through the eyes of our parody scientists.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-12">
+        <!-- Sidebar -->
+        <aside class="space-y-8">
+          <!-- Categories -->
+          <div>
+            <h2 class="font-semibold text-gray-900 dark:text-white mb-4">
+              Categories
+            </h2>
+            <ul class="space-y-2">
+              {categories.map(category => (
+                <li>
+                  <a
+                    href={`/blog/category/${category.toLowerCase()}`}
+                    class="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"
+                  >
+                    {category}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Popular Tags -->
+          <div>
+            <h2 class="font-semibold text-gray-900 dark:text-white mb-4">
+              Popular Tags
+            </h2>
+            <div class="flex flex-wrap gap-2">
+              {tags.map(tag => (
+                <a
+                  href={`/blog/tag/${tag}`}
+                  class="inline-block px-3 py-1 text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/50"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <!-- Posts Grid -->
+        <div>
+          <PostGrid posts={allPosts} columns={2} />
+        </div>
+      </div>
+    </div>
+  </Container>
+</Layout>

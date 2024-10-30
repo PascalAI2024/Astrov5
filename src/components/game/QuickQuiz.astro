@@ -1,0 +1,106 @@
+---
+// Define questions in the component scope
+const QUESTIONS = [
+  {
+    question: "How many planets are in our solar system?",
+    answers: ["6", "7", "8", "9"],
+    correct: 2
+  },
+  {
+    question: "What is a light year?",
+    answers: ["Time", "Distance", "Speed", "Energy"],
+    correct: 1
+  },
+  {
+    question: "Which is the hottest planet?",
+    answers: ["Mercury", "Venus", "Mars", "Jupiter"],
+    correct: 1
+  }
+];
+---
+
+<div class="relative group">
+  <div class="absolute inset-0 bg-gradient-to-r from-cosmic-600/10 to-purple-600/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+  
+  <div class="relative bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-bold text-white">Quick Quiz</h3>
+      <span class="text-cosmic-400 text-sm">🏆 Play & Win</span>
+    </div>
+
+    <div id="quick-quiz" class="space-y-4">
+      <p id="quick-question" class="text-gray-200 text-sm"></p>
+      <div id="quick-answers" class="grid grid-cols-2 gap-2"></div>
+      <button
+        id="quick-start"
+        class="w-full py-2 bg-cosmic-600 text-white rounded-lg hover:bg-cosmic-700 transition-colors text-sm"
+      >
+        Try a Question!
+      </button>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ questions: QUESTIONS }}>
+  class QuickQuiz {
+    constructor(questions) {
+      this.questions = questions;
+      this.currentQuestion = null;
+      this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+      const startButton = document.getElementById('quick-start');
+      startButton?.addEventListener('click', () => this.startQuiz());
+    }
+
+    startQuiz() {
+      this.currentQuestion = this.questions[Math.floor(Math.random() * this.questions.length)];
+      this.showQuestion();
+    }
+
+    showQuestion() {
+      const questionEl = document.getElementById('quick-question');
+      const answersEl = document.getElementById('quick-answers');
+      const startButton = document.getElementById('quick-start');
+
+      if (questionEl && answersEl && startButton) {
+        questionEl.textContent = this.currentQuestion.question;
+        startButton.style.display = 'none';
+
+        answersEl.innerHTML = this.currentQuestion.answers
+          .map((answer, index) => `
+            <button 
+              class="p-2 bg-gray-700 text-white rounded-lg hover:bg-cosmic-600 transition-colors text-sm answer-button"
+              data-index="${index}"
+            >
+              ${answer}
+            </button>
+          `)
+          .join('');
+
+        answersEl.querySelectorAll('.answer-button').forEach(button => {
+          button.addEventListener('click', () => this.handleAnswer(parseInt(button.dataset.index)));
+        });
+      }
+    }
+
+    handleAnswer(answerIndex) {
+      const isCorrect = answerIndex === this.currentQuestion.correct;
+      const answersEl = document.getElementById('quick-answers');
+      const startButton = document.getElementById('quick-start');
+      const questionEl = document.getElementById('quick-question');
+
+      if (answersEl && startButton && questionEl) {
+        questionEl.textContent = isCorrect ? '🎉 Correct! Want to play more?' : '❌ Try again in the full game!';
+        answersEl.innerHTML = '';
+        startButton.style.display = 'block';
+        startButton.textContent = 'Play Full Game';
+        startButton.addEventListener('click', () => window.location.href = '/play', { once: true });
+      }
+    }
+  }
+
+  // Initialize quiz with questions passed from the component
+  new QuickQuiz(questions);
+</script>

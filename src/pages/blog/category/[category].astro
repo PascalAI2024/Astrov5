@@ -1,0 +1,37 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Container from '../../../components/common/Container.astro';
+import PostGrid from '../../../components/blog/PostGrid.astro';
+import { posts } from '../../../data/posts';
+
+export async function getStaticPaths() {
+  const categories = [...new Set(posts.map(post => post.category))];
+  
+  return categories.map(category => ({
+    params: { category: category.toLowerCase() },
+    props: { 
+      category,
+      posts: posts.filter(post => post.category === category)
+    },
+  }));
+}
+
+const { category, posts: categoryPosts } = Astro.props;
+---
+
+<Layout title={`${category} - Blog Posts`}>
+  <Container>
+    <div class="py-16">
+      <header class="mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          {category}
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">
+          Explore our articles about {category.toLowerCase()}.
+        </p>
+      </header>
+
+      <PostGrid posts={categoryPosts} columns={2} />
+    </div>
+  </Container>
+</Layout>

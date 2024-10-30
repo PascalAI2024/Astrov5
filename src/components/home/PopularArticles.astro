@@ -1,0 +1,72 @@
+---
+import { getRecentPosts } from '../../data/posts';
+import { format } from 'date-fns';
+
+const posts = getRecentPosts(3).map(post => ({
+  ...post,
+  views: Math.floor(Math.random() * 90000) + 10000 // Random views between 10k-100k
+}));
+
+function formatViews(views: number): string {
+  if (views >= 1000000) {
+    return `${(views / 1000000).toFixed(1)}M`;
+  }
+  if (views >= 1000) {
+    return `${(views / 1000).toFixed(1)}K`;
+  }
+  return views.toString();
+}
+---
+
+<section class="py-12 bg-gray-50 dark:bg-gray-800/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Popular Articles</h2>
+      <p class="text-gray-600 dark:text-gray-400">Most-read cosmic insights</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      {posts.map((post, index) => (
+        <article class="relative group">
+          <div class="absolute -inset-y-2.5 -inset-x-4 md:-inset-y-4 md:-inset-x-6 sm:rounded-2xl group-hover:bg-gray-50/70 dark:group-hover:bg-gray-800/50"></div>
+          <div class="relative">
+            <!-- Rank Badge -->
+            <div class="absolute -top-4 -left-4 w-8 h-8 bg-cosmic-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg">
+              {index + 1}
+            </div>
+
+            <!-- Article Preview -->
+            <div class="aspect-w-16 aspect-h-9 mb-4">
+              <img 
+                src={post.imageUrl} 
+                alt={post.title}
+                class="rounded-lg object-cover"
+              />
+            </div>
+
+            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                {formatViews(post.views)} views
+              </span>
+              <span>•</span>
+              <time datetime={post.publishDate.toISOString()}>
+                {format(post.publishDate, 'MMM d, yyyy')}
+              </time>
+            </div>
+
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-cosmic-600 dark:group-hover:text-cosmic-400">
+              <a href={`/blog/${post.slug}`}>
+                <span class="absolute inset-0"></span>
+                {post.title}
+              </a>
+            </h3>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,316 @@
+---
+import { getAstroEvents } from '../../utils/astro-events';
+import Button from '../common/Button.astro';
+
+const events = await getAstroEvents();
+---
+
+<section class="relative py-16 overflow-hidden">
+  <!-- Background Effects -->
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/95 to-gray-900"></div>
+    <div class="absolute inset-0 opacity-30"
+      style={{
+        background: `
+          radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.15), transparent 70%),
+          radial-gradient(circle at 80% 50%, rgba(79, 70, 229, 0.15), transparent 70%)
+        `
+      }}
+    ></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-white mb-4">Celestial Events Near You</h2>
+      <p class="text-gray-400">Discover upcoming astronomical phenomena visible from your location</p>
+    </div>
+
+    <!-- Location Permission Request -->
+    <div id="location-prompt" class="text-center mb-8">
+      <Button 
+        id="enable-location"
+        variant="primary"
+        class="inline-flex items-center gap-2"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Enable Location for Local Events
+      </Button>
+    </div>
+
+    <!-- Events Timeline -->
+    <div class="relative">
+      <div class="absolute inset-0 bg-gradient-to-r from-cosmic-600/20 to-purple-600/20 rounded-xl blur-xl opacity-75"></div>
+      
+      <div class="relative bg-gray-900/50 backdrop-blur-sm rounded-xl border border-white/10">
+        <!-- Month Navigation -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-800">
+          <button id="prev-month" class="text-gray-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h3 id="current-month" class="text-xl font-bold text-white"></h3>
+          <button id="next-month" class="text-gray-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Events List -->
+        <div id="events-list" class="divide-y divide-gray-800">
+          <div class="p-8 text-center text-gray-400">
+            Enable location to see astronomical events in your area
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="event-modal" class="fixed inset-0 z-50 hidden">
+      <div class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm"></div>
+      <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="relative bg-gray-900 rounded-xl max-w-lg w-full p-8">
+          <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <div id="event-details" class="space-y-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+interface AstroEvent {
+  title: string;
+  date: Date;
+  type: 'meteor' | 'planet' | 'moon' | 'eclipse' | 'conjunction';
+  description: string;
+  visibility: {
+    time: string;
+    direction: string;
+    altitude: string;
+  };
+  intensity?: string;
+  peak?: string;
+  duration?: string;
+}
+
+class AstroCalendar {
+  private events: AstroEvent[] = [];
+  private currentDate = new Date();
+  private userLocation: GeolocationCoordinates | null = null;
+
+  constructor() {
+    this.setupEventListeners();
+    this.checkLocationPermission();
+    this.updateMonthDisplay();
+  }
+
+  private setupEventListeners() {
+    document.getElementById('enable-location')?.addEventListener('click', () => this.requestLocation());
+    document.getElementById('prev-month')?.addEventListener('click', () => this.changeMonth(-1));
+    document.getElementById('next-month')?.addEventListener('click', () => this.changeMonth(1));
+    document.getElementById('close-modal')?.addEventListener('click', () => this.closeEventModal());
+  }
+
+  private async checkLocationPermission() {
+    if ('geolocation' in navigator) {
+      try {
+        const permission = await navigator.permissions.query({ name: 'geolocation' });
+        if (permission.state === 'granted') {
+          document.getElementById('location-prompt')?.classList.add('hidden');
+          this.getLocation();
+        }
+      } catch (error) {
+        console.error('Error checking location permission:', error);
+      }
+    }
+  }
+
+  private async requestLocation() {
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      
+      this.userLocation = position.coords;
+      document.getElementById('location-prompt')?.classList.add('hidden');
+      this.loadEvents();
+    } catch (error) {
+      console.error('Error getting location:', error);
+    }
+  }
+
+  private async loadEvents() {
+    if (!this.userLocation) return;
+
+    try {
+      const response = await fetch('/api/astro-events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lat: this.userLocation.latitude,
+          lng: this.userLocation.longitude,
+          month: this.currentDate.getMonth(),
+          year: this.currentDate.getFullYear()
+        })
+      });
+
+      this.events = await response.json();
+      this.renderEvents();
+    } catch (error) {
+      console.error('Error loading events:', error);
+    }
+  }
+
+  private renderEvents() {
+    const container = document.getElementById('events-list');
+    if (!container) return;
+
+    container.innerHTML = this.events
+      .map(event => `
+        <div class="group p-6 hover:bg-gray-800/50 transition-colors cursor-pointer" data-event='${JSON.stringify(event)}'>
+          <div class="flex items-start gap-4">
+            <div class="flex-none w-12 h-12 rounded-full bg-cosmic-900 flex items-center justify-center">
+              ${this.getEventIcon(event.type)}
+            </div>
+            <div class="flex-grow">
+              <div class="flex items-center gap-2 mb-1">
+                <h4 class="text-lg font-medium text-white group-hover:text-cosmic-400 transition-colors">
+                  ${event.title}
+                </h4>
+                <span class="text-sm text-cosmic-400">${this.formatDate(event.date)}</span>
+              </div>
+              <p class="text-gray-400 line-clamp-2">${event.description}</p>
+            </div>
+            <svg class="w-5 h-5 flex-none text-gray-400 group-hover:text-cosmic-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      `)
+      .join('');
+
+    // Add click handlers
+    container.querySelectorAll('[data-event]').forEach(element => {
+      element.addEventListener('click', () => {
+        const event = JSON.parse((element as HTMLElement).dataset.event || '{}');
+        this.showEventDetails(event);
+      });
+    });
+  }
+
+  private getEventIcon(type: string): string {
+    const icons = {
+      meteor: '☄️',
+      planet: '🪐',
+      moon: '🌕',
+      eclipse: '🌑',
+      conjunction: '✨'
+    };
+    return icons[type] || '🌟';
+  }
+
+  private formatDate(date: string): string {
+    return new Date(date).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  private showEventDetails(event: AstroEvent) {
+    const modal = document.getElementById('event-modal');
+    const details = document.getElementById('event-details');
+    
+    if (!modal || !details) return;
+
+    details.innerHTML = `
+      <div class="text-center mb-6">
+        <div class="text-4xl mb-4">${this.getEventIcon(event.type)}</div>
+        <h3 class="text-2xl font-bold text-white mb-2">${event.title}</h3>
+        <p class="text-cosmic-400">${this.formatDate(event.date)}</p>
+      </div>
+      
+      <p class="text-gray-300 mb-6">${event.description}</p>
+      
+      <div class="space-y-4 bg-gray-800/50 rounded-lg p-4">
+        <h4 class="font-medium text-white">Viewing Details</h4>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <div class="text-gray-400">Best viewing time</div>
+            <div class="text-white">${event.visibility.time}</div>
+          </div>
+          <div>
+            <div class="text-gray-400">Direction</div>
+            <div class="text-white">${event.visibility.direction}</div>
+          </div>
+          <div>
+            <div class="text-gray-400">Altitude</div>
+            <div class="text-white">${event.visibility.altitude}</div>
+          </div>
+          ${event.intensity ? `
+            <div>
+              <div class="text-gray-400">Intensity</div>
+              <div class="text-white">${event.intensity}</div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button 
+          class="px-4 py-2 bg-cosmic-600 text-white rounded-lg hover:bg-cosmic-700 transition-colors"
+          onclick="this.addToCalendar(${JSON.stringify(event)})"
+        >
+          Add to Calendar
+        </button>
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+  }
+
+  private closeEventModal() {
+    document.getElementById('event-modal')?.classList.add('hidden');
+  }
+
+  private changeMonth(delta: number) {
+    this.currentDate.setMonth(this.currentDate.getMonth() + delta);
+    this.updateMonthDisplay();
+    this.loadEvents();
+  }
+
+  private updateMonthDisplay() {
+    const monthElement = document.getElementById('current-month');
+    if (monthElement) {
+      monthElement.textContent = this.currentDate.toLocaleDateString(undefined, {
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+  }
+
+  private addToCalendar(event: AstroEvent) {
+    const startTime = new Date(event.date);
+    const endTime = new Date(startTime.getTime() + (60 * 60 * 1000)); // 1 hour duration
+
+    const calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&details=${encodeURIComponent(event.description)}&dates=${startTime.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}/${endTime.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`;
+    
+    window.open(calendarUrl, '_blank');
+  }
+}
+
+// Initialize calendar when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new AstroCalendar();
+});
+</script>

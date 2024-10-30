@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main Star -->
+  <circle cx="256" cy="256" r="128" fill="url(#starGradient)">
+    <animate attributeName="r" values="128;140;128" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Orbiting Planets -->
+  <circle cx="256" cy="256" r="200" stroke="url(#orbitGradient)" stroke-width="2" fill="none">
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 256 256"
+      to="360 256 256"
+      dur="20s"
+      repeatCount="indefinite"
+    />
+  </circle>
+  
+  <!-- Small Orbiting Planet -->
+  <circle cx="456" cy="256" r="20" fill="url(#planetGradient)">
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 256 256"
+      to="360 256 256"
+      dur="20s"
+      repeatCount="indefinite"
+    />
+  </circle>
+
+  <!-- Shooting Stars -->
+  <path d="M50 50L100 100" stroke="white" stroke-width="2">
+    <animate
+      attributeName="opacity"
+      values="0;1;0"
+      dur="2s"
+      repeatCount="indefinite"
+    />
+  </path>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="starGradient" x1="0" y1="0" x2="512" y2="512">
+      <stop offset="0%" stop-color="#9333EA"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+    
+    <linearGradient id="orbitGradient" x1="0" y1="256" x2="512" y2="256">
+      <stop offset="0%" stop-color="#9333EA" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.2"/>
+    </linearGradient>
+    
+    <linearGradient id="planetGradient" x1="436" y1="236" x2="476" y2="276">
+      <stop offset="0%" stop-color="#9333EA"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+</svg>

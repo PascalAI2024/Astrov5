@@ -1,0 +1,254 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/common/Container.astro';
+
+const features = [
+  {
+    name: 'AI-Powered Content',
+    description: 'Leveraging GPT-4 to generate accurate and engaging astronomy content.',
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+    </svg>`,
+  },
+  {
+    name: 'DALL-E Integration',
+    description: 'Creating stunning, scientifically accurate astronomical visualizations.',
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+    </svg>`,
+  },
+  {
+    name: 'Educational Focus',
+    description: 'Making complex astronomical concepts accessible to everyone.',
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+    </svg>`,
+  },
+];
+
+const team = [
+  {
+    name: 'GPT-4',
+    role: 'Content Intelligence',
+    imageUrl: '/images/tech/openai.svg',
+    bio: 'Our advanced language model that crafts engaging and accurate astronomy content.',
+    tech: ['Natural Language Processing', 'Content Generation', 'Scientific Analysis'],
+    bgGradient: 'from-emerald-500 to-teal-700'
+  },
+  {
+    name: 'DALL-E 3',
+    role: 'Visual Intelligence',
+    imageUrl: '/images/dalle-avatar.jpg',
+    bio: 'Creating stunning astronomical visualizations and artistic interpretations.',
+    tech: ['Image Generation', 'Scientific Visualization', 'Artistic Rendering'],
+    bgGradient: 'from-purple-500 to-indigo-700'
+  },
+  {
+    name: 'Astro Framework',
+    role: 'Performance Engine',
+    imageUrl: '/images/tech/astro.svg',
+    bio: 'Powering our blazing-fast, modern web experience with cutting-edge technology.',
+    tech: ['Islands Architecture', 'Static Site Generation', 'Component Framework'],
+    bgGradient: 'from-orange-500 to-red-700'
+  },
+  {
+    name: 'TailwindCSS',
+    role: 'Style Architect',
+    imageUrl: '/images/tech/tailwind.svg',
+    bio: 'Crafting beautiful, responsive designs with utility-first CSS framework.',
+    tech: ['Responsive Design', 'Dark Mode', 'Custom Animations'],
+    bgGradient: 'from-sky-500 to-blue-700'
+  }
+];
+
+const techStack = [
+  {
+    category: 'Frontend',
+    icon: '🎨',
+    items: [
+      { name: 'Astro', description: 'Modern static site generator', logo: '/images/tech/astro.svg' },
+      { name: 'TailwindCSS', description: 'Utility-first CSS framework', logo: '/images/tech/tailwind.svg' },
+      { name: 'TypeScript', description: 'Type-safe JavaScript', logo: '/images/tech/typescript.svg' }
+    ]
+  },
+  {
+    category: 'AI & ML',
+    icon: '🤖',
+    items: [
+      { name: 'GPT-4', description: 'Advanced language model', logo: '/images/tech/openai.svg' },
+      { name: 'DALL-E 3', description: 'AI image generation', logo: '/images/dalle-avatar.jpg' },
+      { name: 'Custom ML Models', description: 'Astronomical data analysis', logo: '/images/tech/tensorflow.svg' }
+    ]
+  },
+  {
+    category: 'Backend',
+    icon: '⚡',
+    items: [
+      { name: 'Node.js', description: 'JavaScript runtime', logo: '/images/tech/nodejs.svg' },
+      { name: 'LibSQL', description: 'Embedded database', logo: '/images/tech/libsql.svg' },
+      { name: 'OpenAI API', description: 'AI service integration', logo: '/images/tech/openai.svg' }
+    ]
+  }
+];
+
+const stats = [
+  { label: 'Daily Active Users', value: '10K+' },
+  { label: 'Articles Generated', value: '500+' },
+  { label: 'Quiz Players', value: '50K+' },
+  { label: 'Scientific Accuracy', value: '99%' }
+];
+---
+
+<Layout title="About Cosmic AI">
+  <Container>
+    <div class="py-16 sm:py-24">
+      <!-- Hero Section -->
+      <div class="relative mb-24">
+        <div class="absolute inset-0">
+          <div class="absolute inset-0 bg-gradient-to-r from-cosmic-600/20 to-purple-600/20 rounded-3xl blur-3xl"></div>
+        </div>
+        
+        <div class="relative max-w-3xl mx-auto text-center">
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl mb-6">
+            About Cosmic AI
+          </h1>
+          <p class="text-lg leading-8 text-gray-600 dark:text-gray-400 mb-8">
+            Exploring the cosmos through the lens of artificial intelligence, making astronomy accessible and engaging for everyone.
+          </p>
+          
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map(stat => (
+              <div class="relative group">
+                <div class="absolute inset-0 bg-cosmic-400/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative">
+                  <div class="text-3xl font-bold text-cosmic-400 mb-1">{stat.value}</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">{stat.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="relative mb-24">
+        <div class="absolute inset-0">
+          <div class="absolute inset-0 bg-gradient-to-b from-cosmic-600/10 to-purple-600/10 rounded-3xl blur-3xl"></div>
+        </div>
+        
+        <div class="relative">
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">Core Features</h2>
+          <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+            {features.map((feature) => (
+              <div class="relative group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cosmic-600/20 to-purple-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 blur-xl"></div>
+                <div class="relative bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                  <dt class="text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                    <div class="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-cosmic-600">
+                      <Fragment set:html={feature.icon} />
+                    </div>
+                    {feature.name}
+                  </dt>
+                  <dd class="mt-1 text-base leading-7 text-gray-600 dark:text-gray-400">
+                    {feature.description}
+                  </dd>
+                </div>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+      <!-- Tech Stack Section -->
+      <div class="relative mb-24">
+        <div class="absolute inset-0">
+          <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-cosmic-600/10 rounded-3xl blur-3xl"></div>
+        </div>
+        
+        <div class="relative">
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">Our Technology Stack</h2>
+          <div class="grid md:grid-cols-3 gap-8">
+            {techStack.map((category) => (
+              <div class="relative group">
+                <div class="absolute -inset-2 bg-gradient-to-r from-cosmic-600/20 to-purple-600/20 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-300"></div>
+                <div class="relative bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
+                  <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">{category.icon}</span>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">{category.category}</h3>
+                  </div>
+                  <ul class="space-y-4">
+                    {category.items.map((item) => (
+                      <li class="relative group/item">
+                        <div class="flex items-center gap-3">
+                          <img 
+                            src={item.logo} 
+                            alt={item.name}
+                            class="w-6 h-6 object-contain"
+                            width="24"
+                            height="24"
+                          />
+                          <div>
+                            <div class="font-medium text-cosmic-600 dark:text-cosmic-400">{item.name}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">{item.description}</div>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Section -->
+      <div class="relative">
+        <div class="absolute inset-0">
+          <div class="absolute inset-0 bg-gradient-to-b from-cosmic-600/10 to-purple-600/10 rounded-3xl blur-3xl"></div>
+        </div>
+        
+        <div class="relative">
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">Our Technology Team</h2>
+          <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+            {team.map((member) => (
+              <div class="relative group">
+                <div class={`absolute -inset-2 bg-gradient-to-r ${member.bgGradient} rounded-xl opacity-0 group-hover:opacity-20 blur-xl transition-all duration-300`}></div>
+                
+                <div class="relative flex gap-6 bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10">
+                  <img 
+                    class="h-24 w-24 rounded-xl object-contain bg-gray-800 p-2"
+                    src={member.imageUrl}
+                    alt={member.name}
+                    width="96"
+                    height="96"
+                  />
+                  <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{member.name}</h3>
+                    <p class="text-cosmic-600 dark:text-cosmic-400 text-sm mb-3">{member.role}</p>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{member.bio}</p>
+                    <div class="flex flex-wrap gap-2">
+                      {member.tech.map((tech) => (
+                        <span class="px-2 py-1 text-xs font-medium bg-cosmic-100 dark:bg-cosmic-900/30 text-cosmic-800 dark:text-cosmic-200 rounded-full">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Layout>
+
+<style>
+.blur-3xl {
+  --tw-blur: blur(64px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+</style>

@@ -1,0 +1,23 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Daily content generation schedule
+[build.environment]
+  TZ = "UTC"
+
+# Add scheduled function
+[[plugins]]
+  package = "@netlify/plugin-functions-scheduled-function"
+
+[[scheduled-functions]]
+  name = "daily-content"
+  schedule = "0 0 * * *"  # Run daily at midnight UTC

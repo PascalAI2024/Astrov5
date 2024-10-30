@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroSection from '../components/home/HeroSection.astro';
+import FeaturedContent from '../components/home/FeaturedContent.astro';
+import LatestDiscoveries from '../components/home/LatestDiscoveries.astro';
+import CalendarPreview from '../components/home/CalendarPreview.astro';
+import InteractiveDemo from '../components/home/InteractiveDemo.astro';
+import PopularArticles from '../components/home/PopularArticles.astro';
+import GamePreview from '../components/home/GamePreview.astro';
+import SiteStats from '../components/home/SiteStats.astro';
+import StarBackground from '../components/home/StarBackground.astro';
+
+---
+
+<Layout title="Cosmic AI - AI-Powered Astronomy Blog">
+  <div class="relative">
+    <StarBackground />
+    <main>
+      <HeroSection />
+      <FeaturedContent />
+      <LatestDiscoveries />
+      <CalendarPreview />
+      <InteractiveDemo />
+      <PopularArticles />
+      <SiteStats />
+      <GamePreview />
+    </main>
+  </div>
+</Layout>

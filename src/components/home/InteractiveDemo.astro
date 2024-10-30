@@ -1,0 +1,61 @@
+---
+import Button from '../common/Button.astro';
+
+const topics = [
+  "Black Holes",
+  "Exoplanets",
+  "Dark Matter",
+  "Supernovas",
+  "Quantum Astronomy"
+];
+---
+
+<section class="py-16 relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative z-10 bg-white/10 dark:bg-gray-800/50 backdrop-blur-lg rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          Try Our AI Content Generator
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400">
+          Select a topic or enter your own to generate an AI-powered astronomy article
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3 justify-center mb-8">
+        {topics.map(topic => (
+          <button
+            class="px-4 py-2 rounded-full bg-cosmic-100 dark:bg-cosmic-900/30 text-cosmic-700 dark:text-cosmic-300 hover:bg-cosmic-200 dark:hover:bg-cosmic-800/50 transition-colors"
+            onclick={`document.getElementById('topic-input').value = '${topic}'`}
+          >
+            {topic}
+          </button>
+        ))}
+      </div>
+
+      <div class="max-w-xl mx-auto">
+        <div class="flex gap-3">
+          <input
+            type="text"
+            id="topic-input"
+            placeholder="Enter an astronomy topic..."
+            class="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-cosmic-500"
+          />
+          <Button
+            href="/generate"
+            variant="primary"
+            class="whitespace-nowrap"
+          >
+            Generate
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative Elements -->
+  <div class="absolute inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-br from-cosmic-500/10 via-purple-500/5 to-transparent" />
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cosmic-500/20 rounded-full blur-3xl" />
+  </div>
+</section>

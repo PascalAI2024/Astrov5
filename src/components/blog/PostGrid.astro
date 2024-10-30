@@ -1,0 +1,34 @@
+---
+import type { BlogPost } from '../../types/blog';
+import BlogCard from './BlogCard.astro';
+import FeaturedArticle from './FeaturedArticle.astro';
+
+interface Props {
+  posts: BlogPost[];
+  columns?: 1 | 2 | 3;
+  showFeatured?: boolean;
+}
+
+const { posts, columns = 2, showFeatured = true } = Astro.props;
+
+// Get the first post as featured if showFeatured is true
+const [featuredPost, ...remainingPosts] = showFeatured ? posts : [null, ...posts];
+
+const gridCols = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-1 lg:grid-cols-2',
+  3: 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'
+};
+---
+
+<div class="space-y-16">
+  <!-- Featured Article -->
+  {showFeatured && featuredPost && <FeaturedArticle post={featuredPost} />}
+
+  <!-- Remaining Posts Grid -->
+  <div class={`grid ${gridCols[columns]} gap-8`}>
+    {(showFeatured ? remainingPosts : posts).map((post) => (
+      <BlogCard post={post} />
+    ))}
+  </div>
+</div>

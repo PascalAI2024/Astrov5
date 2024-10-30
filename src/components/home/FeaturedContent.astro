@@ -1,0 +1,175 @@
+---
+import { getRecentPosts } from '../../data/posts';
+import ArticlePreview from './ArticlePreview.astro';
+
+const recentPosts = getRecentPosts(6);
+
+// Function to get a new random order daily
+function getDailyShuffledPosts(posts: any[]) {
+  const today = new Date();
+  const seed = today.getDate() + today.getMonth() * 31;
+  return [...posts].sort((a, b) => {
+    const hashA = hashCode(a.slug + seed);
+    const hashB = hashCode(b.slug + seed);
+    return hashA - hashB;
+  });
+}
+
+function hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return hash;
+}
+
+const shuffledPosts = getDailyShuffledPosts(recentPosts);
+---
+
+<section class="relative py-12">
+  <!-- Background Elements -->
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/95 to-gray-900"></div>
+    <div class="absolute inset-0"
+      style={{
+        background: `
+          radial-gradient(circle at 30% 50%, rgba(147, 51, 234, 0.05), transparent 60%),
+          radial-gradient(circle at 70% 50%, rgba(79, 70, 229, 0.05), transparent 60%)
+        `
+      }}
+    ></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-white mb-4">Featured Articles</h2>
+      <p class="text-gray-400">Explore our latest cosmic discoveries and insights</p>
+    </div>
+
+    <div class="relative">
+      <div id="carousel" class="relative h-[400px] overflow-hidden rounded-2xl">
+        {shuffledPosts.map((post, index) => (
+          <div 
+            class={`carousel-item absolute inset-0 transition-all duration-1000 ease-in-out transform ${
+              index === 0 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
+            }`}
+            data-index={index}
+          >
+            <ArticlePreview post={post} />
+          </div>
+        ))}
+
+        <!-- Navigation Arrows -->
+        <button 
+          class="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-900/50 text-white hover:bg-gray-900/80 transition-colors z-10 backdrop-blur-sm group"
+          id="prev-slide"
+          aria-label="Previous slide"
+        >
+          <svg class="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button 
+          class="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-gray-900/50 text-white hover:bg-gray-900/80 transition-colors z-10 backdrop-blur-sm group"
+          id="next-slide"
+          aria-label="Next slide"
+        >
+          <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="mt-4 max-w-xl mx-auto">
+        <div class="relative h-1 bg-gray-800 rounded-full overflow-hidden">
+          <div 
+            id="progress-bar" 
+            class="absolute left-0 top-0 h-full w-0 bg-gradient-to-r from-cosmic-500 to-cosmic-400 transition-all duration-300"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll('.carousel-item');
+const totalSlides = slides.length;
+const progressBar = document.getElementById('progress-bar');
+let autoplayInterval: number;
+const autoplayDelay = 8000; // 8 seconds
+
+function updateSlides() {
+  slides.forEach((slide, index) => {
+    if (index === currentSlide) {
+      slide.classList.remove('opacity-0', 'translate-x-full', '-translate-x-full');
+      slide.classList.add('opacity-100', 'translate-x-0');
+    } else if (index < currentSlide) {
+      slide.classList.remove('opacity-100', 'translate-x-0', 'translate-x-full');
+      slide.classList.add('opacity-0', '-translate-x-full');
+    } else {
+      slide.classList.remove('opacity-100', 'translate-x-0', '-translate-x-full');
+      slide.classList.add('opacity-0', 'translate-x-full');
+    }
+  });
+
+  // Update progress bar
+  if (progressBar) {
+    progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+  }
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % totalSlides;
+  updateSlides();
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+  updateSlides();
+}
+
+function startAutoplay() {
+  stopAutoplay();
+  autoplayInterval = setInterval(nextSlide, autoplayDelay);
+}
+
+function stopAutoplay() {
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval);
+  }
+}
+
+// Event Listeners
+document.getElementById('next-slide')?.addEventListener('click', () => {
+  nextSlide();
+  startAutoplay(); // Reset autoplay timer
+});
+
+document.getElementById('prev-slide')?.addEventListener('click', () => {
+  prevSlide();
+  startAutoplay(); // Reset autoplay timer
+});
+
+// Start autoplay immediately
+startAutoplay();
+
+// Pause autoplay on hover
+const carousel = document.getElementById('carousel');
+carousel?.addEventListener('mouseenter', stopAutoplay);
+carousel?.addEventListener('mouseleave', startAutoplay);
+
+// Initial update
+updateSlides();
+</script>
+
+<style>
+.carousel-item {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+</style>

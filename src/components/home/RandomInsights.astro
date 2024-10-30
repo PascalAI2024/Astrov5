@@ -1,0 +1,37 @@
+---
+import InsightCard from '../common/InsightCard.astro';
+
+const insights = [
+  {
+    title: "The Quantum Dance",
+    fact: "Quantum entanglement allows particles to instantly influence each other, regardless of distance. Einstein called it 'spooky action at a distance.'",
+    category: "insight",
+    source: "Quantum Physics Principles"
+  },
+  {
+    title: "Galactic Trivia",
+    fact: "Our Milky Way galaxy contains an estimated 100-400 billion stars, and is just one of billions of galaxies in the observable universe.",
+    category: "fact",
+    source: "NASA Galaxy Database"
+  },
+  {
+    title: "Test Your Knowledge",
+    fact: "What's the closest star to Earth after the Sun? Hint: It's part of a triple star system!",
+    category: "quiz"
+  }
+];
+---
+
+<section class="py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+      Random Insights
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      {insights.map(insight => (
+        <InsightCard {...insight} />
+      ))}
+    </div>
+  </div>
+</section>

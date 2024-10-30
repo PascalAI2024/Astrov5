@@ -1,0 +1,178 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Container from '../../components/common/Container.astro';
+import AnimatedBackground from '../../components/blog/AnimatedBackground.astro';
+import ArticleVisual from '../../components/blog/ArticleVisual.astro';
+import InlineVisual from '../../components/blog/InlineVisual.astro';
+import AuthorCard from '../../components/blog/AuthorCard.astro';
+import RelatedPosts from '../../components/blog/RelatedPosts.astro';
+import { posts } from '../../data/posts';
+import { format } from 'date-fns';
+
+export function getStaticPaths() {
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { author } = post;
+
+// Process content to add visualizations
+function processContent(content: string) {
+  const sections = content.split('\n\n');
+  
+  return sections.map(section => {
+    // Handle headings
+    if (section.startsWith('#')) {
+      const level = section.match(/^#+/)[0].length;
+      const text = section.replace(/^#+\s/, '');
+      const Tag = `h${level}`;
+      return `<${Tag} class="font-bold text-gray-900 dark:text-white mb-4">${text}</${Tag}>`;
+    }
+    
+    // Handle blockquotes
+    if (section.startsWith('*')) {
+      return `<blockquote class="text-lg italic text-gray-700 dark:text-gray-300 bg-cosmic-50 dark:bg-cosmic-900/20 p-6 rounded-xl border-l-4 border-cosmic-400 dark:border-cosmic-500 my-8">
+        ${section.replace(/\*/g, '')}
+      </blockquote>`;
+    }
+    
+    // Handle lists
+    if (section.startsWith('-')) {
+      return `<ul class="list-disc pl-6 space-y-2 mb-6 text-gray-700 dark:text-gray-300">
+        ${section.split('\n').map(item => `<li>${item.replace(/^-\s/, '')}</li>`).join('')}
+      </ul>`;
+    }
+
+    // Add visualizations based on content keywords
+    if (section.toLowerCase().includes('black hole')) {
+      return `
+        <div class="not-prose my-8">
+          <InlineVisual 
+            type="animation" 
+            variant="black-hole" 
+            caption="Visualization of a black hole's accretion disk" 
+            align="right"
+            size="small"
+          />
+        </div>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">${section}</p>
+      `;
+    }
+
+    if (section.toLowerCase().includes('quantum')) {
+      return `
+        <div class="not-prose my-8">
+          <InlineVisual 
+            type="animation" 
+            variant="quantum" 
+            caption="Quantum particle behavior visualization" 
+            align="left"
+            size="small"
+          />
+        </div>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">${section}</p>
+      `;
+    }
+
+    if (section.toLowerCase().includes('spacetime') || section.toLowerCase().includes('gravity')) {
+      return `
+        <div class="not-prose my-8">
+          <InlineVisual 
+            type="animation" 
+            variant="spacetime" 
+            caption="Spacetime curvature visualization" 
+            align="center"
+            size="medium"
+          />
+        </div>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">${section}</p>
+      `;
+    }
+    
+    // Default paragraph
+    return `<p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">${section}</p>`;
+  }).join('\n');
+}
+
+const visualType = post.tags.includes('black holes') ? 'black-hole' 
+  : post.tags.includes('galaxies') ? 'galaxy'
+  : post.tags.includes('planets') ? 'planet'
+  : post.tags.includes('stars') ? 'star'
+  : 'nebula';
+---
+
+<Layout title={post.title}>
+  <div class="relative">
+    <AnimatedBackground />
+    <Container>
+      <article class="py-16 max-w-4xl mx-auto">
+        <!-- Hero Section -->
+        <div class="mb-12">
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-900">
+            <div class="aspect-[2/1] relative">
+              <img 
+                src={post.imageUrl} 
+                alt={post.title}
+                class="w-full h-full object-cover opacity-80"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
+              
+              <!-- Animated Visual -->
+              <div class="absolute inset-0 flex items-center justify-center opacity-40 mix-blend-screen">
+                <ArticleVisual type={visualType} class="w-full max-w-lg" />
+              </div>
+            </div>
+            
+            <!-- Title Overlay -->
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+              <div class="flex items-center gap-4 mb-4">
+                <span class="px-3 py-1 text-sm font-medium text-white bg-cosmic-600/90 rounded-full backdrop-blur-sm">
+                  {post.category}
+                </span>
+                <time class="text-gray-300 font-medium">
+                  {format(post.publishDate, 'MMMM d, yyyy')}
+                </time>
+              </div>
+              
+              <h1 class="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
+                {post.title}
+              </h1>
+              
+              <p class="text-xl text-gray-200 max-w-3xl">
+                {post.excerpt}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Author section -->
+        {author && <AuthorCard author={author} class="mb-12" />}
+
+        <!-- Content -->
+        <div class="article-content">
+          <Fragment set:html={processContent(post.content)} />
+        </div>
+
+        <!-- Tags -->
+        <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex flex-wrap gap-2">
+            {post.tags.map(tag => (
+              <a
+                href={`/blog/tag/${tag}`}
+                class="px-4 py-2 text-sm font-medium text-cosmic-600 dark:text-cosmic-400 bg-cosmic-50 dark:bg-cosmic-900/30 rounded-full hover:bg-cosmic-100 dark:hover:bg-cosmic-800/50 transition-colors"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        </footer>
+
+        <!-- Related Posts -->
+        <RelatedPosts currentPost={post} posts={posts} />
+      </article>
+    </Container>
+  </div>
+</Layout>

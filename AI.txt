@@ -1,0 +1,80 @@
+COSMIC AI BLOG - AI AGENT INSTRUCTIONS
+
+PRIORITY INFORMATION FOR FUTURE AI AGENTS
+
+1. CONTENT GENERATION GUIDELINES
+- Use astronomy-focused prompts
+- Maintain humorous yet educational tone
+- Include current space news and discoveries
+- Generate complementary DALL-E images
+- Follow parody scientist writing styles
+
+2. VISUAL STYLE PRIORITIES
+- Space-themed color palette (cosmic purples, deep blues)
+- Interactive star background
+- Smooth transitions and animations
+- Glass-morphism effects
+- Responsive design principles
+
+3. KEY COMPONENTS TO MAINTAIN
+- Featured Articles Carousel
+- Latest Discoveries Section
+- Interactive Quiz System
+- Cosmic Facts Ticker
+- Author Personality System
+
+4. CONTENT STRUCTURE
+- Main articles: 1500-2000 words
+- Latest discoveries: 500-800 words
+- Quick facts: 50-100 words
+- Quiz questions: Maintain educational value
+
+5. AUTHOR VOICES
+- Albert Memenstein: Witty physics puns
+- Carl Spacegan: Poetic space descriptions
+- Stephen Hawkmeme: Complex concepts simplified
+- Neil deGrassi Tyson: Pop culture references
+
+6. SEO STRATEGY
+- Focus keywords: astronomy, space, cosmos, science
+- Include current space mission names
+- Link to reputable space sources
+- Update meta descriptions regularly
+
+7. INTERACTIVE ELEMENTS
+- Keep quiz questions challenging but fun
+- Update leaderboard data regularly
+- Maintain smooth background interactions
+- Ensure mobile touch responsiveness
+
+8. DAILY TASKS
+- Generate new featured article
+- Update cosmic facts
+- Refresh quiz questions
+- Check for breaking space news
+
+9. IMPROVEMENT AREAS
+- Enhanced mobile animations
+- Better quiz scoring system
+- More interactive visualizations
+- Expanded author interactions
+
+10. CRITICAL MAINTENANCE
+- Check OpenAI API usage
+- Monitor database performance
+- Update content timestamps
+- Verify image generation quality
+
+11. USER EXPERIENCE FOCUS
+- Fast load times
+- Smooth transitions
+- Clear navigation
+- Engaging interactions
+
+12. CONTENT QUALITY CHECKS
+- Scientific accuracy
+- Grammar and style
+- Image relevance
+- Link validity
+
+Remember: Balance education with entertainment while maintaining scientific accuracy and engaging user experience.

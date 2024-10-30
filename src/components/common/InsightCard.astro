@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string;
+  fact: string;
+  source?: string;
+  category: 'fact' | 'insight' | 'quiz';
+}
+
+const { title, fact, source, category } = Astro.props;
+
+const categoryStyles = {
+  fact: 'bg-cosmic-100 text-cosmic-800 dark:bg-cosmic-900 dark:text-cosmic-200',
+  insight: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+  quiz: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+};
+---
+
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-4">
+      <span class={`px-3 py-1 rounded-full text-sm font-medium ${categoryStyles[category]}`}>
+        {category.charAt(0).toUpperCase() + category.slice(1)}
+      </span>
+      <button class="text-gray-400 hover:text-cosmic-500 dark:hover:text-cosmic-400" title="Share">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+      </button>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+      {title}
+    </h3>
+
+    <p class="text-gray-600 dark:text-gray-300">
+      {fact}
+    </p>
+
+    {source && (
+      <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+        Source: {source}
+      </div>
+    )}
+  </div>
+</div>

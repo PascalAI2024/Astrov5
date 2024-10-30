@@ -1,0 +1,95 @@
+---
+import { format } from 'date-fns';
+import ArticleVisual from '../blog/ArticleVisual.astro';
+
+const discoveries = [
+  {
+    title: "New Exoplanet System Found",
+    date: new Date('2024-03-15'),
+    description: "AI analysis reveals a fascinating solar system with potential habitable zones.",
+    image: "https://images.unsplash.com/photo-1614642264762-d0a3b8bf3700",
+    type: 'planet',
+    color: 'from-blue-500 to-green-500'
+  },
+  {
+    title: "Mysterious Radio Signals Detected",
+    date: new Date('2024-03-14'),
+    description: "Our AI systems have identified unusual patterns in deep space transmissions.",
+    image: "https://images.unsplash.com/photo-1465101162946-4377e57745c3",
+    type: 'star',
+    color: 'from-purple-500 to-pink-500'
+  },
+  {
+    title: "Black Hole Merger Observed",
+    date: new Date('2024-03-13'),
+    description: "Gravitational waves from a massive black hole collision detected.",
+    image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564",
+    type: 'black-hole',
+    color: 'from-cosmic-500 to-purple-500'
+  }
+];
+---
+
+<section class="py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-white mb-4">Latest Discoveries</h2>
+      <p class="text-gray-400">AI-powered analysis of recent astronomical phenomena</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {discoveries.map((discovery) => (
+        <div class="group relative">
+          <!-- Outer Glow Effect -->
+          <div class="absolute -inset-2 bg-gradient-to-r rounded-2xl opacity-25 blur-2xl transition-all duration-500 group-hover:opacity-50 group-hover:blur-3xl {discovery.color}"></div>
+          
+          <!-- Inner Glow Effect -->
+          <div class="absolute -inset-1 bg-gradient-to-r rounded-xl opacity-75 blur-xl transition-all duration-500 group-hover:opacity-100 group-hover:blur-2xl {discovery.color}"></div>
+          
+          <!-- Card Container -->
+          <div class="relative h-full flex flex-col bg-gray-900/80 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
+            <!-- Image Container -->
+            <div class="relative aspect-video">
+              <img 
+                src={discovery.image} 
+                alt={discovery.title}
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              
+              <!-- Gradient Overlay -->
+              <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/60 to-gray-900"></div>
+            </div>
+            
+            <!-- Content -->
+            <div class="relative flex-grow p-6">
+              <time class="text-sm text-cosmic-400 mb-3 block">
+                {format(discovery.date, 'MMM d, yyyy')}
+              </time>
+              
+              <h3 class="text-xl font-bold text-white mb-3 group-hover:text-cosmic-300 transition-colors">
+                {discovery.title}
+              </h3>
+              
+              <p class="text-gray-300 mb-4">
+                {discovery.description}
+              </p>
+
+              <!-- Read More Link -->
+              <div class="mt-auto flex items-center text-cosmic-400 text-sm font-medium group/link">
+                <span class="mr-2">Read full article</span>
+                <svg 
+                  class="w-4 h-4 transition-transform group-hover/link:translate-x-1" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,95 @@
+---
+interface Powerup {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  cost: number;
+}
+
+interface Props {
+  powerups: Powerup[];
+}
+
+const { powerups } = Astro.props;
+---
+
+<div class="flex justify-center gap-4 mb-8">
+  {powerups.map(powerup => (
+    <button
+      class="powerup-button relative group"
+      data-powerup={powerup.id}
+      data-cost={powerup.cost}
+    >
+      <div class="absolute inset-0 bg-gradient-to-br from-cosmic-600/20 to-purple-600/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+      
+      <div class="relative px-4 py-2 bg-gray-800/50 rounded-lg backdrop-blur-sm border border-gray-700/50">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">{powerup.icon}</span>
+          <span class="text-sm font-medium text-white">{powerup.name}</span>
+          <span class="text-xs text-cosmic-400">{powerup.cost}</span>
+        </div>
+      </div>
+
+      <!-- Tooltip -->
+      <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-gray-900 rounded-lg text-sm text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+        {powerup.description}
+      </div>
+    </button>
+  ))}
+</div>
+
+<script>
+class PowerupSystem {
+  private buttons: NodeListOf<HTMLElement>;
+  
+  constructor() {
+    this.buttons = document.querySelectorAll('.powerup-button');
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners() {
+    this.buttons.forEach(button => {
+      button.addEventListener('click', () => this.usePowerup(button));
+    });
+  }
+
+  private usePowerup(button: HTMLElement) {
+    const powerupId = button.dataset.powerup;
+    const cost = parseInt(button.dataset.cost || '0');
+
+    // Check if player has enough points
+    const currentScore = parseInt(document.getElementById('current-score')?.textContent || '0');
+    
+    if (currentScore >= cost) {
+      // Emit powerup event
+      document.dispatchEvent(new CustomEvent('powerup-used', {
+        detail: { powerupId, cost }
+      }));
+
+      // Disable button temporarily
+      button.classList.add('opacity-50', 'cursor-not-allowed');
+      setTimeout(() => {
+        button.classList.remove('opacity-50', 'cursor-not-allowed');
+      }, 5000);
+    } else {
+      // Show "not enough points" message
+      this.showError(button);
+    }
+  }
+
+  private showError(button: HTMLElement) {
+    const error = document.createElement('div');
+    error.className = 'absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-red-500 text-white text-xs rounded-full';
+    error.textContent = 'Not enough points!';
+    button.appendChild(error);
+    
+    setTimeout(() => error.remove(), 2000);
+  }
+}
+
+// Initialize powerup system
+document.addEventListener('DOMContentLoaded', () => {
+  new PowerupSystem();
+});
+</script>

@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/common/Container.astro';
+
+---
+
+<Layout title="Privacy Policy">
+  <Container>
+    <div class="py-16 max-w-3xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        Privacy Policy
+      </h1>
+
+      <div class="prose prose-lg dark:prose-invert">
+        <p>Last updated: {new Date().toLocaleDateString()}</p>
+
+        <h2>Introduction</h2>
+        <p>
+          At Cosmic AI, we take your privacy seriously. This Privacy Policy explains how we collect,
+          use, and protect your personal information when you use our website.
+        </p>
+
+        <h2>Information We Collect</h2>
+        <ul>
+          <li>Email address (when you subscribe to our newsletter)</li>
+          <li>Usage data and analytics</li>
+          <li>Cookies and similar technologies</li>
+        </ul>
+
+        <h2>How We Use Your Information</h2>
+        <ul>
+          <li>To send you our newsletter and updates</li>
+          <li>To improve our website and content</li>
+          <li>To analyze usage patterns and optimize user experience</li>
+        </ul>
+
+        <h2>Data Protection</h2>
+        <p>
+          We implement appropriate technical and organizational measures to protect your personal
+          information against unauthorized access, alteration, disclosure, or destruction.
+        </p>
+
+        <h2>Your Rights</h2>
+        <p>
+          You have the right to:
+        </p>
+        <ul>
+          <li>Access your personal data</li>
+          <li>Correct inaccurate data</li>
+          <li>Request deletion of your data</li>
+          <li>Withdraw consent at any time</li>
+        </ul>
+
+        <h2>Contact Us</h2>
+        <p>
+          If you have any questions about this Privacy Policy, please contact us at:
+          privacy@cosmic-ai.blog
+        </p>
+      </div>
+    </div>
+  </Container>
+</Layout>

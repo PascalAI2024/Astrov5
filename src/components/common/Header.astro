@@ -1,0 +1,186 @@
+---
+import Container from './Container.astro';
+import logo from '../../assets/logo.svg';
+
+const navigation = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Authors', href: '/authors' },
+  { name: 'Generate', href: '/generate' },
+  { name: 'Play', href: '/play' },
+  { name: 'About', href: '/about' },
+];
+
+const isCurrentPage = (path: string) => {
+  const currentPath = Astro.url.pathname;
+  if (path === '/') {
+    return currentPath === '/';
+  }
+  return currentPath.startsWith(path);
+};
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 h-14">
+  <!-- Animated Gradient Border -->
+  <div class="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-cosmic-400/50 to-transparent"></div>
+  
+  <!-- Glassmorphism Background -->
+  <div class="absolute inset-0 backdrop-blur-md bg-gray-900/70"></div>
+
+  <Container>
+    <nav class="relative flex items-center justify-between h-full">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group relative">
+        <!-- Logo Glow Effect -->
+        <div class="absolute inset-0 bg-cosmic-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        <div class="relative">
+          <img
+            src={logo.src}
+            alt="Cosmic AI Logo"
+            class="w-6 h-6 object-contain transition-transform duration-300 group-hover:scale-110"
+            width={24}
+            height={24}
+          />
+          <div class="absolute inset-0 bg-gradient-to-r from-cosmic-400/20 to-purple-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+        
+        <span class="text-base font-bold bg-gradient-to-r from-cosmic-400 to-purple-400 bg-clip-text text-transparent">
+          Cosmic AI
+        </span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <ul class="hidden md:flex items-center space-x-6">
+        {navigation.map(item => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'relative py-1 text-sm transition-colors duration-300',
+                isCurrentPage(item.href) 
+                  ? 'text-cosmic-400'
+                  : 'text-gray-300 hover:text-cosmic-400'
+              ]}
+            >
+              <span class="relative z-10">{item.name}</span>
+              
+              <!-- Hover Effect -->
+              <span class="absolute inset-0 bg-gradient-to-r from-cosmic-400/10 to-purple-400/10 rounded-full opacity-0 hover:opacity-100 transition-opacity -z-10"></span>
+              
+              <!-- Active Indicator -->
+              {isCurrentPage(item.href) && (
+                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-cosmic-400 to-purple-400">
+                  <span class="absolute top-0 left-0 w-2 h-2 bg-cosmic-400 rounded-full -translate-y-1/2 animate-ping"></span>
+                  <span class="absolute top-0 right-0 w-2 h-2 bg-purple-400 rounded-full -translate-y-1/2 animate-ping animation-delay-500"></span>
+                </span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Mobile Menu Button -->
+      <button
+        id="mobile-menu-button"
+        type="button"
+        class="md:hidden relative p-2 text-gray-300 hover:text-cosmic-400 transition-colors"
+        aria-label="Toggle menu"
+      >
+        <div class="absolute inset-0 bg-cosmic-400/10 rounded-full opacity-0 hover:opacity-100 transition-opacity"></div>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path class="mobile-menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path class="mobile-menu-close hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 md:hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 backdrop-blur-xl bg-gray-900/90"></div>
+        
+        <div class="relative h-full p-6">
+          <div class="flex items-center justify-between mb-8">
+            <a href="/" class="flex items-center gap-2">
+              <img
+                src={logo.src}
+                alt="Cosmic AI Logo"
+                class="w-6 h-6"
+                width={24}
+                height={24}
+              />
+              <span class="text-base font-bold text-cosmic-400">
+                Cosmic AI
+              </span>
+            </a>
+            <button
+              id="close-mobile-menu"
+              class="p-2 text-gray-300 hover:text-cosmic-400 transition-colors"
+              aria-label="Close menu"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <ul class="space-y-4">
+            {navigation.map(item => (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={[
+                    'block py-2 text-lg transition-colors duration-300',
+                    isCurrentPage(item.href)
+                      ? 'text-cosmic-400'
+                      : 'text-gray-300 hover:text-cosmic-400'
+                  ]}
+                >
+                  {item.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </Container>
+</header>
+
+<div class="h-14"></div> <!-- Spacer for fixed header -->
+
+<style>
+  @keyframes ping {
+    75%, 100% {
+      transform: translateY(-50%) scale(2);
+      opacity: 0;
+    }
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .mobile-menu-icon,
+  .mobile-menu-close {
+    transition: opacity 300ms ease-in-out;
+  }
+</style>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuIcon = document.querySelector('.mobile-menu-icon');
+  const mobileMenuClose = document.querySelector('.mobile-menu-close');
+
+  function toggleMobileMenu() {
+    mobileMenu?.classList.toggle('translate-x-full');
+    document.body.classList.toggle('overflow-hidden');
+    mobileMenuIcon?.classList.toggle('hidden');
+    mobileMenuClose?.classList.toggle('hidden');
+  }
+
+  mobileMenuButton?.addEventListener('click', toggleMobileMenu);
+  closeMobileMenuButton?.addEventListener('click', toggleMobileMenu);
+</script>

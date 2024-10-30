@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/common/Container.astro';
+import AuthorGrid from '../components/blog/AuthorGrid.astro';
+
+---
+
+<Layout title="Our Authors">
+  <Container>
+    <div class="py-16">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          Meet Our Cosmic Comedians
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">
+          The brightest (and funniest) minds in parody astronomy
+        </p>
+      </div>
+
+      <AuthorGrid />
+    </div>
+  </Container>
+</Layout>

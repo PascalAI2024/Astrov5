@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/common/Container.astro';
+
+---
+
+<Layout title="Terms of Service">
+  <Container>
+    <div class="py-16 max-w-3xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">
+        Terms of Service
+      </h1>
+
+      <div class="prose prose-lg dark:prose-invert">
+        <p>Last updated: {new Date().toLocaleDateString()}</p>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>
+          By accessing and using Cosmic AI, you accept and agree to be bound by these Terms of Service.
+        </p>
+
+        <h2>2. Content</h2>
+        <p>
+          All content on this website is generated using artificial intelligence and is for
+          educational and entertainment purposes only. While we strive for accuracy, we cannot
+          guarantee the completeness or reliability of the content.
+        </p>
+
+        <h2>3. Intellectual Property</h2>
+        <p>
+          All content, including AI-generated articles and images, is protected by copyright and
+          other intellectual property laws. You may share and link to our content, but proper
+          attribution is required.
+        </p>
+
+        <h2>4. User Conduct</h2>
+        <p>
+          Users agree to:
+        </p>
+        <ul>
+          <li>Use the website legally and ethically</li>
+          <li>Not attempt to disrupt or compromise the website</li>
+          <li>Respect other users and their rights</li>
+        </ul>
+
+        <h2>5. Disclaimer</h2>
+        <p>
+          Cosmic AI provides content for informational purposes only. We make no warranties about
+          the accuracy or reliability of the content.
+        </p>
+
+        <h2>6. Contact</h2>
+        <p>
+          For questions about these terms, please contact us at: terms@cosmic-ai.blog
+        </p>
+      </div>
+    </div>
+  </Container>
+</Layout>

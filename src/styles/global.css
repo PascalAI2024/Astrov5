@@ -1,0 +1,243 @@
+/* Base styles */
+@layer base {
+  @font-face {
+    font-family: 'Space Grotesk';
+    src: url('/fonts/SpaceGrotesk-Variable.woff2') format('woff2-variations');
+    font-weight: 300 700;
+    font-display: swap;
+  }
+
+  :root {
+    --font-space: 'Space Grotesk', system-ui, sans-serif;
+    --cosmic-glow: 0 0 20px theme('colors.cosmic.400' / 20%);
+  }
+
+  html {
+    font-family: var(--font-space);
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply antialiased bg-gray-900 text-gray-100;
+  }
+
+  /* Improve text readability */
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Better contrast for dark mode text */
+  .dark p {
+    @apply text-gray-300;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4 {
+    @apply text-white;
+  }
+
+  /* Smooth transitions */
+  .transition-all {
+    @apply duration-300 ease-in-out;
+  }
+
+  /* Enhanced Glass effect */
+  .glass-effect {
+    @apply backdrop-blur-md bg-gray-900/70 border-b border-white/10;
+    box-shadow: var(--cosmic-glow);
+  }
+
+  /* Article content styles */
+  .article-content {
+    @apply max-w-prose mx-auto;
+  }
+
+  .article-content p {
+    @apply mb-6 text-lg;
+  }
+
+  .article-content h2 {
+    @apply text-2xl font-bold mt-12 mb-6;
+  }
+
+  .article-content h3 {
+    @apply text-xl font-bold mt-8 mb-4;
+  }
+
+  .article-content ul, .article-content ol {
+    @apply mb-6 pl-6;
+  }
+
+  .article-content li {
+    @apply mb-2;
+  }
+
+  .article-content blockquote {
+    @apply pl-4 border-l-4 border-cosmic-500 italic my-6;
+  }
+
+  /* Better spacing for mobile */
+  @screen sm {
+    .article-content p {
+      @apply text-xl;
+    }
+  }
+}
+
+/* Enhanced animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    opacity: 0.5; 
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes cosmic-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes nebula-drift {
+  0% { transform: translate(0, 0) rotate(0); opacity: 0.5; }
+  50% { transform: translate(10px, -10px) rotate(5deg); opacity: 0.8; }
+  100% { transform: translate(0, 0) rotate(0); opacity: 0.5; }
+}
+
+/* Enhanced utility classes */
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.1) 50%,
+      rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-cosmic-spin {
+    animation: cosmic-spin 20s linear infinite;
+  }
+
+  .animate-nebula {
+    animation: nebula-drift 15s ease-in-out infinite;
+  }
+
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  .cosmic-blur {
+    backdrop-filter: blur(16px);
+  }
+
+  .cosmic-border {
+    @apply border border-white/10;
+    box-shadow: var(--cosmic-glow);
+  }
+
+  .cosmic-hover {
+    @apply transition-all duration-300;
+  }
+
+  .cosmic-hover:hover {
+    @apply transform scale-[1.02];
+    box-shadow: var(--cosmic-glow);
+  }
+
+  .cosmic-card {
+    @apply bg-gray-900/50 backdrop-blur-md rounded-xl border border-white/10;
+    box-shadow: var(--cosmic-glow);
+  }
+
+  .cosmic-gradient {
+    @apply bg-gradient-to-br from-cosmic-600/20 via-purple-600/20 to-cosmic-400/20;
+  }
+
+  .cosmic-text {
+    @apply bg-gradient-to-r from-cosmic-400 to-purple-400 bg-clip-text text-transparent;
+  }
+}
+
+/* Interactive elements */
+.interactive-hover {
+  @apply transition-all duration-300 ease-out;
+}
+
+.interactive-hover:hover {
+  @apply transform scale-105;
+  filter: brightness(1.2);
+  box-shadow: var(--cosmic-glow);
+}
+
+/* Particle effects */
+.cosmic-particles {
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-particles::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    theme('colors.cosmic.400' / 10%) 0%,
+    transparent 50%
+  );
+  animation: cosmic-spin 30s linear infinite;
+}
+
+/* Enhanced scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-cosmic-600/50 rounded-full;
+  box-shadow: var(--cosmic-glow);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-cosmic-500;
+}

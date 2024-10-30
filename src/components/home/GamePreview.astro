@@ -1,0 +1,90 @@
+---
+import { getRandomAuthors } from '../../data/authors';
+
+const mockLeaders = getRandomAuthors(3).map((author, index) => ({
+  name: author.name,
+  score: Math.floor(Math.random() * 5000) + 5000,
+  rank: index + 1
+}));
+
+---
+
+<section class="relative py-16 overflow-hidden">
+  <!-- Background Effects -->
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/95 to-gray-900"></div>
+    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Game Preview -->
+      <div class="relative group">
+        <div class="absolute -inset-4 bg-gradient-to-r from-cosmic-600/20 to-purple-600/20 rounded-xl blur-xl opacity-75 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div class="relative bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-white/10">
+          <h2 class="text-3xl font-bold text-white mb-6">Test Your Cosmic Knowledge</h2>
+          <p class="text-gray-300 mb-8">Challenge yourself with our interactive astronomy quiz and compete with fellow cosmic explorers!</p>
+          
+          <!-- Sample Question Preview -->
+          <div class="mb-8">
+            <p class="text-lg text-cosmic-300 mb-4">Sample Question:</p>
+            <p class="text-white mb-6">What is the closest star to Earth after the Sun?</p>
+            <div class="grid grid-cols-2 gap-4">
+              {['Proxima Centauri', 'Alpha Centauri', "Barnard's Star", 'Sirius'].map((answer) => (
+                <button class="p-3 bg-gray-800/50 hover:bg-cosmic-600/50 text-white rounded-lg transition-colors text-sm backdrop-blur-sm">
+                  {answer}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <a href="/play" class="inline-flex items-center gap-2 px-6 py-3 bg-cosmic-600 text-white rounded-lg hover:bg-cosmic-700 transition-colors group">
+            <span>Play Now</span>
+            <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Leaderboard Preview -->
+      <div class="relative">
+        <div class="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-cosmic-600/20 rounded-xl blur-xl opacity-75"></div>
+        <div class="relative bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-white/10">
+          <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+            <span>🏆</span> Top Cosmic Explorers
+          </h3>
+
+          <div class="space-y-4">
+            {mockLeaders.map((leader) => (
+              <div class="flex items-center gap-4 p-4 bg-gray-800/50 rounded-lg backdrop-blur-sm">
+                <div class="w-8 h-8 flex items-center justify-center bg-cosmic-600 rounded-full text-white font-bold">
+                  {leader.rank}
+                </div>
+                <div class="flex-grow">
+                  <div class="text-white font-medium">{leader.name}</div>
+                  <div class="text-cosmic-400 text-sm">{leader.score.toLocaleString()} points</div>
+                </div>
+                <div class="text-2xl">{leader.rank === 1 ? '👑' : leader.rank === 2 ? '🥈' : '🥉'}</div>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-6 text-center">
+            <a href="/play" class="text-cosmic-400 hover:text-cosmic-300 text-sm">
+              View Full Leaderboard →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgb(255 255 255 / 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+</style>

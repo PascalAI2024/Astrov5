@@ -1,0 +1,202 @@
+---
+import type { BlogPost } from '../../types/blog';
+import { posts } from '../../data/posts';
+
+// Enhanced word extraction and processing
+function extractKeywords(posts: BlogPost[]) {
+  const keywords = posts.flatMap(post => [
+    ...post.title.toLowerCase().split(/\s+/),
+    ...post.tags,
+    ...post.content.toLowerCase().split(/\s+/)
+  ]).filter(word => 
+    word.length > 3 && 
+    !['and', 'the', 'this', 'that', 'with', 'from'].includes(word)
+  );
+
+  const wordFrequency = keywords.reduce((acc, word) => {
+    acc[word] = (acc[word] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.entries(wordFrequency)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 40)
+    .map(([word, count]) => ({
+      text: word,
+      size: Math.max(16, Math.min(48, count * 2)),
+      color: `hsl(${Math.random() * 60 + 240}, ${70 + Math.random() * 20}%, ${50 + Math.random() * 20}%)`,
+      relatedPosts: posts.filter(post => 
+        post.title.toLowerCase().includes(word) ||
+        post.tags.includes(word) ||
+        post.content.toLowerCase().includes(word)
+      ).slice(0, 3)
+    }));
+}
+
+const keywords = extractKeywords(posts);
+---
+
+<div class="relative">
+  <div class="absolute -inset-4 bg-gradient-to-r from-cosmic-600/20 to-purple-600/20 rounded-xl blur-xl opacity-75"></div>
+  
+  <div class="relative bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-white/10">
+    <h3 class="text-xl font-bold text-white mb-6 text-center">Explore Cosmic Topics</h3>
+    
+    <!-- Word Cloud Container -->
+    <div class="relative h-[400px] perspective-1000">
+      <div id="word-cloud" class="absolute inset-0">
+        {keywords.map((word, index) => (
+          <button
+            class="word absolute transform-gpu transition-all duration-700 cursor-pointer text-center whitespace-nowrap hover:text-cosmic-400"
+            style={{
+              '--index': index,
+              '--delay': `${index * 50}ms`,
+              fontSize: `${word.size}px`,
+              color: word.color,
+            }}
+            data-word={word.text}
+            data-posts={JSON.stringify(word.relatedPosts.map(post => post.slug))}
+          >
+            {word.text}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Related Articles Popup -->
+    <div id="related-articles" class="hidden absolute bg-gray-900/95 backdrop-blur-md rounded-lg p-6 shadow-xl border border-cosmic-500/20 max-w-md">
+      <h4 class="text-lg font-bold text-white mb-4">Related Articles</h4>
+      <div id="related-articles-content" class="space-y-4"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.word {
+  opacity: 0;
+  transform: translateZ(0) rotateX(0) rotateY(0);
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateZ(-100px) rotateX(20deg) rotateY(20deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0) rotateX(0) rotateY(0);
+  }
+}
+
+#word-cloud:hover .word:not(:hover) {
+  opacity: 0.3;
+  transform: scale(0.95);
+}
+
+.word:hover {
+  transform: scale(1.1) !important;
+  text-shadow: 0 0 20px currentColor;
+  z-index: 10;
+}
+</style>
+
+<script>
+class WordCloudAnimation {
+  constructor() {
+    this.container = document.getElementById('word-cloud');
+    this.words = document.querySelectorAll('.word');
+    this.popup = document.getElementById('related-articles');
+    this.popupContent = document.getElementById('related-articles-content');
+    this.centerX = this.container?.offsetWidth / 2 || 0;
+    this.centerY = this.container?.offsetHeight / 2 || 0;
+    this.radius = Math.min(this.centerX, this.centerY) * 0.8;
+    
+    this.setupWords();
+    this.setupEventListeners();
+    this.animate();
+  }
+
+  setupWords() {
+    this.words.forEach((word, i) => {
+      const angle = (i / this.words.length) * Math.PI * 2;
+      const x = this.centerX + this.radius * Math.cos(angle);
+      const y = this.centerY + this.radius * Math.sin(angle);
+      word.style.left = `${x}px`;
+      word.style.top = `${y}px`;
+      word.style.transform = 'translate(-50%, -50%)';
+    });
+  }
+
+  setupEventListeners() {
+    this.words.forEach(word => {
+      word.addEventListener('click', (e) => this.showRelatedArticles(e));
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!this.popup?.contains(e.target) && !(e.target as Element).classList.contains('word')) {
+        this.hidePopup();
+      }
+    });
+  }
+
+  showRelatedArticles(e: MouseEvent) {
+    const word = e.target as HTMLElement;
+    const posts = JSON.parse(word.dataset.posts || '[]');
+    
+    if (this.popupContent && this.popup) {
+      this.popupContent.innerHTML = posts.length ? posts.map((slug: string) => {
+        const post = window.posts?.find(p => p.slug === slug);
+        return post ? `
+          <a href="/blog/${post.slug}" class="block group">
+            <div class="text-cosmic-300 font-medium group-hover:text-cosmic-400 transition-colors">
+              ${post.title}
+            </div>
+            <div class="text-sm text-gray-400">${post.excerpt.slice(0, 100)}...</div>
+          </a>
+        ` : '';
+      }).join('') : '<p class="text-gray-400">No related articles found</p>';
+
+      this.popup.style.display = 'block';
+      const rect = word.getBoundingClientRect();
+      this.popup.style.left = `${rect.left}px`;
+      this.popup.style.top = `${rect.bottom + 10}px`;
+    }
+  }
+
+  hidePopup() {
+    if (this.popup) {
+      this.popup.style.display = 'none';
+    }
+  }
+
+  animate() {
+    let angle = 0;
+    const speed = 0.0001;
+
+    const rotate = () => {
+      angle += speed;
+      this.words.forEach((word, i) => {
+        const wordAngle = angle + (i / this.words.length) * Math.PI * 2;
+        const x = this.centerX + this.radius * Math.cos(wordAngle);
+        const y = this.centerY + this.radius * Math.sin(wordAngle);
+        word.style.left = `${x}px`;
+        word.style.top = `${y}px`;
+      });
+      requestAnimationFrame(rotate);
+    };
+
+    rotate();
+  }
+}
+
+// Initialize word cloud when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new WordCloudAnimation();
+});
+</script>

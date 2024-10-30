@@ -1,0 +1,115 @@
+---
+---
+
+<div class="relative">
+  <svg class="w-12 h-12" viewBox="0 0 48 48">
+    <circle
+      cx="24"
+      cy="24"
+      r="20"
+      fill="none"
+      stroke="#1f2937"
+      stroke-width="4"
+    />
+    <circle
+      id="timer-circle"
+      cx="24"
+      cy="24"
+      r="20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="4"
+      class="text-cosmic-500 transition-all duration-200"
+      style="transform: rotate(-90deg); transform-origin: center; stroke-dasharray: 126; stroke-dashoffset: 0;"
+    />
+  </svg>
+  <div class="absolute inset-0 flex items-center justify-center">
+    <span id="timer-text" class="text-sm font-bold text-white">30</span>
+  </div>
+</div>
+
+<script>
+class QuizTimer {
+  private circle: SVGCircleElement | null;
+  private text: HTMLElement | null;
+  private duration: number;
+  private remaining: number;
+  private interval: number | null;
+  private circumference: number;
+
+  constructor(duration: number = 30) {
+    this.circle = document.getElementById('timer-circle') as SVGCircleElement;
+    this.text = document.getElementById('timer-text');
+    this.duration = duration;
+    this.remaining = duration;
+    this.interval = null;
+    this.circumference = 2 * Math.PI * 20; // r = 20
+
+    this.init();
+  }
+
+  private init() {
+    if (this.circle) {
+      this.circle.style.strokeDasharray = `${this.circumference} ${this.circumference}`;
+      this.circle.style.strokeDashoffset = '0';
+    }
+  }
+
+  public start() {
+    this.interval = setInterval(() => {
+      this.remaining--;
+      this.update();
+
+      if (this.remaining <= 0) {
+        this.stop();
+        // Emit timeout event
+        document.dispatchEvent(new CustomEvent('quiz-timeout'));
+      }
+    }, 1000);
+  }
+
+  private update() {
+    if (this.text) {
+      this.text.textContent = this.remaining.toString();
+    }
+
+    if (this.circle) {
+      const offset = this.circumference - (this.remaining / this.duration) * this.circumference;
+      this.circle.style.strokeDashoffset = offset.toString();
+
+      // Update colors based on time remaining
+      if (this.remaining <= 5) {
+        this.circle.classList.remove('text-cosmic-500');
+        this.circle.classList.add('text-red-500');
+      } else if (this.remaining <= 10) {
+        this.circle.classList.remove('text-cosmic-500');
+        this.circle.classList.add('text-yellow-500');
+      }
+    }
+  }
+
+  public stop() {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+  }
+
+  public reset() {
+    this.remaining = this.duration;
+    this.update();
+    if (this.circle) {
+      this.circle.classList.remove('text-red-500', 'text-yellow-500');
+      this.circle.classList.add('text-cosmic-500');
+    }
+  }
+
+  public addTime(seconds: number) {
+    this.remaining = Math.min(this.remaining + seconds, this.duration);
+    this.update();
+  }
+}
+
+// Initialize timer when needed
+window.QuizTimer = QuizTimer;
+</script>

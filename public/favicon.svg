@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="cosmicGradient">
+            <stop stop-color="#5c7cfa" offset="0%"/>
+            <stop stop-color="#4c6ef5" offset="100%"/>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M128,20 L166.4,98.8 L252,111.2 L190,171.6 L204.8,256 L128,216 L51.2,256 L66,171.6 L4,111.2 L89.6,98.8 L128,20 Z" fill="url(#cosmicGradient)"/>
+    </g>
+</svg>

@@ -1,0 +1,4 @@
+<content>User-agent: *
+Allow: /
+
+Sitemap: https://cosmic-ai.blog/sitemap.xml</content>

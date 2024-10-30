@@ -1,0 +1,148 @@
+---
+import Button from '../common/Button.astro';
+
+const stats = [
+  { value: '10K+', label: 'Daily Readers' },
+  { value: '500+', label: 'Articles' },
+  { value: '50K+', label: 'Quiz Players' },
+  { value: '99%', label: 'Scientific Accuracy' }
+];
+
+const phrases = [
+  "Explore the Multiverse",
+  "Decode Reality",
+  "Question Everything",
+  "Expand Your Mind",
+  "Break Physics"
+];
+---
+
+<section class="relative min-h-[60vh] flex items-center justify-center py-16">
+  <!-- Animated Background Elements -->
+  <div class="absolute inset-0 overflow-hidden">
+    <!-- Nebula Effect -->
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900/0 via-cosmic-900/30 to-gray-900">
+      <div class="absolute inset-0 opacity-30"
+        style={{
+          background: `
+            radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.15), transparent 70%),
+            radial-gradient(circle at 80% 50%, rgba(79, 70, 229, 0.15), transparent 70%)
+          `
+        }}
+      ></div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+    <!-- Dynamic Title -->
+    <h1 class="text-4xl sm:text-6xl font-bold mb-6 tracking-tight leading-tight">
+      <span class="inline-block bg-gradient-to-r from-cosmic-400 via-purple-400 to-cosmic-300 bg-clip-text text-transparent">
+        <span id="dynamic-title">Explore the Multiverse</span>
+      </span>
+    </h1>
+
+    <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+      Where artificial intelligence meets cosmic curiosity, creating a unique blend of astronomical insights and scientific humor.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 mb-12">
+      <Button
+        href="/blog"
+        variant="primary"
+        size="lg"
+        class="group relative overflow-hidden"
+      >
+        <span class="relative z-10 flex items-center gap-2">
+          Latest Discoveries
+          <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </span>
+        <div class="absolute inset-0 bg-gradient-to-r from-cosmic-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      </Button>
+      
+      <Button
+        href="/play"
+        variant="outline"
+        size="lg"
+        class="group relative overflow-hidden"
+      >
+        <span class="relative z-10 flex items-center gap-2">
+          <svg class="w-5 h-5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Test Your Knowledge
+        </span>
+        <div class="absolute inset-0 bg-gradient-to-r from-cosmic-900/50 to-purple-900/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      </Button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      {stats.map(({ value, label }) => (
+        <div class="relative group">
+          <div class="absolute inset-0 bg-cosmic-400/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative">
+            <div class="text-3xl font-bold text-white mb-1">{value}</div>
+            <div class="text-sm text-gray-400">{label}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px currentColor;
+  }
+</style>
+
+<script define:vars={{ phrases }}>
+class DynamicTitle {
+  constructor(phrases) {
+    this.phrases = phrases;
+    this.currentPhrase = 0;
+    this.currentChar = 0;
+    this.element = document.getElementById('dynamic-title');
+    this.isDeleting = false;
+    this.start();
+  }
+
+  start() {
+    this.tick();
+  }
+
+  tick() {
+    const current = this.phrases[this.currentPhrase];
+    const text = this.isDeleting
+      ? current.substring(0, this.currentChar - 1)
+      : current.substring(0, this.currentChar + 1);
+
+    this.element.textContent = text;
+
+    if (!this.isDeleting && this.currentChar === current.length) {
+      setTimeout(() => this.isDeleting = true, 2000);
+    } else if (this.isDeleting && this.currentChar === 0) {
+      this.isDeleting = false;
+      this.currentPhrase = (this.currentPhrase + 1) % this.phrases.length;
+    }
+
+    this.currentChar = this.isDeleting ? this.currentChar - 1 : this.currentChar + 1;
+
+    const delta = this.isDeleting ? 100 : 150;
+    setTimeout(() => this.tick(), delta);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  new DynamicTitle(phrases);
+});
+</script>

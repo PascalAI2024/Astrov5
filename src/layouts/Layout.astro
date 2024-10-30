@@ -1,0 +1,97 @@
+---
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import ThemeToggle from '../components/common/ThemeToggle.astro';
+import ScrollToTop from '../components/common/ScrollToTop.astro';
+import CosmicFacts from '../components/common/CosmicFacts.astro';
+import StarBackground from '../components/home/StarBackground.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen bg-transparent flex flex-col font-space relative">
+    <StarBackground />
+    
+    <!-- Content Wrapper with Glass Effect -->
+    <div class="relative flex flex-col flex-grow z-10">
+      <Header />
+      <main class="flex-grow pb-12">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <div class="fixed bottom-4 right-4 z-50">
+      <ThemeToggle />
+    </div>
+    <ScrollToTop />
+    <CosmicFacts />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-light)) 30%,
+      white 60%
+    );
+  }
+
+  /* Improved Glass Effect */
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/5 dark:bg-gray-900/10 border border-white/10 dark:border-gray-700/20;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cosmic-600/50 rounded-full hover:bg-cosmic-600 transition-colors;
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Base Text Colors */
+  body {
+    @apply text-gray-100;
+  }
+
+  /* Content Container Glass Effect */
+  .content-glass {
+    @apply relative rounded-xl overflow-hidden;
+  }
+
+  .content-glass::before {
+    content: '';
+    @apply absolute inset-0 backdrop-blur-xl bg-white/5 dark:bg-gray-900/5;
+    z-index: -1;
+  }
+</style>
